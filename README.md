@@ -9,3 +9,5 @@ The code is developed with MatLab2017 SimBiology pipeline and is distributed und
 General Public License (please read copyright_and_license and LICENSE files for details. 
 
 Example workflow is provided in the file pbpk_host_microbiome_workflow_1.
+
+This model is part of the work by Michael Zimmermann, Maria Zimmermann-Kogadeeva, Rebekka Wegmann and Andrew L. Goodman. 
