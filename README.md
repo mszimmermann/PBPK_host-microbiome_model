@@ -10,4 +10,6 @@ General Public License (please read copyright_and_license and LICENSE files for 
 
 Example workflow is provided in the file pbpk_host_microbiome_workflow_1.
 
+Example workflow pbpk_host_microbiome_workflow_2 contains an extended PBPK host-microbiome model with enterohepatic circulation and three drug metabolites. 
+
 This model is part of the work by Michael Zimmermann, Maria Zimmermann-Kogadeeva, Rebekka Wegmann and Andrew L. Goodman. 
