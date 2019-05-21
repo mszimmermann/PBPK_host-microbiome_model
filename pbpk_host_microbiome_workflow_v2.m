@@ -3,6 +3,7 @@
 % define files containing the models and data for first step:
 % estimating host parameters (datafilenames1)
 % and second step: estimating bacterial parameters (datafilenames2)
+dataFolder = ['Data' filesep];
 modelfilenames = {'example_basic_model_BRV_mut_wt.csv' ...
                   'example_basic_model_BRV_GF_CV.csv' ...
                   'example_basic_model_SRV_GF_CV.csv' ...
@@ -24,12 +25,12 @@ datafilenames2 = {'example_data_BRV_WT.csv'...
               
 % build the models
 for files_i = 1:length(modelfilenames)
-    modelfilename = modelfilenames{files_i};
-    datafilename1 = datafilenames1{files_i};
-    datafilename2 = datafilenames2{files_i};
+    modelfilename = [dataFolder modelfilenames{files_i}];
+    datafilename1 = [dataFolder datafilenames1{files_i}];
+    datafilename2 = [dataFolder datafilenames2{files_i}];
     % define model output files with out_ preffix and input file name
-    outfilename1 = ['out_' datafilenames1{files_i}];
-    outfilename2 = ['out_' datafilenames2{files_i}];
+    outfilename1 = [dataFolder 'out_' datafilenames1{files_i}];
+    outfilename2 = [dataFolder 'out_' datafilenames2{files_i}];
     
     % build model according to the definition in the table 
     [modelGutUniversal] = create_model_from_file(modelfilename);
