@@ -1,0 +1,123 @@
+Drug pharmacokinetic model description and parameter definitions of the extended model CLZ for GF and CV mice;;;;;
+;;;;;
+;;;;;CLZ models
+Model entity;Name;Description;Units;Fit data;Initial value
+Constant;D;Drug dose administered to the mouse;mole;0;100
+Constant;F;Bioavailability of the drug (estimated in a separate experiment, see supplementary table S22);;0;0.556
+Constant;Vsi;Volume of small intestine;milliliter;0;0.3
+Constant;Vserum;Volume of distribution (estimated in a separate experiment, see supplementary table S22);milliliter;0;30
+Constant;Vcecum;Volume of cecum of germ-free mouse;milliliter;0;3
+Constant;Vcolon;Volume of colon of germ-free mouse (cecal volume propagated to colon);milliliter;0;3
+Constant;Vfeces;Volume of feces of germ-free mouse (cecal volume propagated to feces);milliliter;0;3
+Constant;VcecumCVR;Volume of cecum of conventional mouse;milliliter;0;0.25
+Constant;VcolonCVR;Volume of colon of conventional mouse (cecal volume propagated to colon);milliliter;0;0.25
+Constant;VfecesCVR;Volume of feces of conventional mouse (cecal volume propagated to feces);milliliter;0;0.25
+Constant;Vurine;Volume of urine;milliliter;0;2
+Metabolite;P_si;Parent drug available for absorption from SI to serum, initial amout calculated as dose D * bioavailability F;mole;;55.6
+Metabolite;P_si0;Parent drug available for propagation from SI to the GI tract, initial amout calculated as dose D * (1-bioavailability F);mole;;44.4
+Metabolite;P_serum;Parent drug amount in the serum;mole;;0
+Metabolite;P_urine;Parent drug amount in the urine;mole;;0
+Metabolite;M1_si1;Metabolite M1 amount in the small intestine I;mole;;0
+Metabolite;M1_si2;Metabolite M1 amount in the small intestine II;mole;;0
+Metabolite;M1_si3;Metabolite M1 amount in the small intestine III;mole;;0
+Metabolite;M1_serum;Metabolite M1 amount in the serum;mole;;0
+Metabolite;M3_serum;Metabolite M3 amount in the serum contributed by bacteria (absorbed from cecum to serum);mole;;0
+Metabolite;M1_liver;Metabolite M1 amount in the liver;mole;;0
+Metabolite;M1_bile;Metabolite M1 amount in bile (enterohepatic circulation);mole;;0
+Metabolite;M1_cecum;Metabolite M1 amount in the cecum;mole;;0
+Metabolite;M3_cecum;Metabolite M3 amount in the cecum;mole;;0
+Metabolite;M1_colon;Metabolite M1 amount in the colon;mole;;0
+Metabolite;M3_colon;Metabolite M3 amount in the colon;mole;;0
+Metabolite;M1_feces;Metabolite M1 amount in the feces;mole;;0
+Metabolite;M3_feces;Metabolite M3 amount in the feces;mole;;0
+Metabolite;M3_serumbact;Metabolite M3 amount in the serum contributed by bacteria (absorbed from cecum to serum);mole;;0
+Metabolite;M3_urinebact;Metabolite M3 amount in the urine contributed by bacteria (absorbed from cecum to serum and eliminated into urine);mole;;0
+Metabolite;M1_urine;Metabolite M1 amount in the urine;mole;;0
+Metabolite;M3_urine;Metabolite M3 amount in the urine;mole;;0
+Metabolite;P_si1;Parent drug amount in the small intestine I;mole;;0
+Metabolite;P_si2;Parent drug amount in the small intestine II;mole;;0
+Metabolite;P_si3;Parent drug amount in the small intestine III;mole;;0
+Metabolite;M2_serum;Metabolite M2 amount in the serum;mole;;0
+Metabolite;P_liver;Parent drug amount in the liver;mole;;0
+Metabolite;P_bile;Parent drug amount in bile (enterohepatic circulation);mole;;0
+Metabolite;P_cecum;Parent drug amount in the cecum;mole;;0
+Metabolite;M2_cecum;Metabolite M2 amount in the cecum;mole;;0
+Metabolite;P_colon;Parent drug amount in the colon;mole;;0
+Metabolite;M2_colon;Metabolite M2 amount in the colon;mole;;0
+Metabolite;P_feces;Parent drug amount in the feces;mole;;0
+Metabolite;M2_feces;Metabolite M2 amount in the feces;mole;;0
+Metabolite;M2_serumbact;Metabolite M2 amount in the serum contributed by bacteria (absorbed from cecum to serum);mole;;0
+Metabolite;M2_urinebact;Metabolite M2 amount in the urine contributed by bacteria (absorbed from cecum to serum and eliminated into urine);mole;;0
+Metabolite;M2_urine;Metabolite M2 amount in the urine;mole;;0
+Parameter;k_a_P;coefficient of absorption from SI to serum;1/hour;0;1.3
+Parameter;k_e_P;coefficient of enterohepatic circulation;1/hour;1;0.887739216
+Parameter;k_cH_M1;coefficient of host conversion of M1 to M3;1/hour;1;0.436184956
+Parameter;k_aSI_M1;coefficient of drug propagation from colon to feces;1/hour;1;0.886235039
+Parameter;k_cH_M3;coefficient of M3 absorption from large intestine;1/hour;1;0.931111627
+Parameter;k_p4;coefficient of M2 absorption from large intestine;1/hour;1;0.613474882
+Parameter;k_p3;coefficient of bacterial conversion of drug to M2;1/hour;1;0.818640735
+Parameter;k_aLI1_M1;coefficient of drug elimination from serum;1/hour;1;0.394534684
+Parameter;k_aLI2_M1;coefficient of drug propagation from small intestine to cecum;1/hour;1;0.826629507
+Parameter;k_e_M1;coefficient of drug absorption from small intestine during enterohepatic circulation;1/hour;1;0.258582251
+Parameter;k_e_M3;coefficient of drug absorption from colon;1/hour;1;0.190784648
+Parameter;k_cB_M3;coefficient of M1 absorption from small intestine;1/hour;2;0.097396526
+Parameter;k_aLI1_M3;coefficient of metabolite elimination from serum;1/hour;2;0.092041979
+Parameter;k_eh;coefficient of host conversion of drug to M2;1/hour;1;0.612809589
+Parameter;k_aSI_P;coefficient of metabolite absorption from cecum to serum;1/hour;1;0.503840082
+Parameter;k_p1;coefficient of host conversion of M2 to M3;1/hour;1;0.819422242
+Parameter;k_p2;coefficient of M2 elimination from serum;1/hour;1;0.531889169
+Parameter;k_aLI1_P;coefficient of drug propagation through small intestine;1/hour;1;0.453893466
+Parameter;k_aLI2_P;coefficient of drug propagation from cecum to colon;1/hour;1;0.202075097
+Parameter;k_cH_M2;coefficient of M3 elimination from serum;1/hour;1;0.897865685
+Parameter;k_cH_M2M3;coefficient of bacterial conversion of M1 to M3;1/hour;1;0.59336186
+Parameter;k_e_M2;coefficient of drug absorption from cecum;1/hour;1;0.064633591
+Parameter;k_cB_M2;coefficient of metabolite absorption from large intestine (colon) to serum;1/hour;2;0.702156391
+Parameter;k_aLI1_M2;coefficient of drug to metabolite conversion by the host;1/hour;2;0.127717532
+Equation;P_si -> P_serum;k_a_P * P_si;;;
+Equation;P_serum -> P_urine;k_e_P * P_serum;;;
+Equation;P_serum -> M1_serum;k_cH_M1 * P_serum;;;
+Equation;M1_si1 -> M1_serum;k_aSI_M1 * M1_si1;;;
+Equation;M1_si2 -> M1_serum;k_aSI_M1 * M1_si2;;;
+Equation;M1_si3 -> M1_serum;k_aSI_M1 * M1_si3;;;
+Equation;M1_serum -> M3_serum;k_cH_M3 * M1_serum;;;
+Equation;M1_si1 -> M1_si2;k_p1 * M1_si1;;;
+Equation;M1_si2 -> M1_si3;k_p1 * M1_si2;;;
+Equation;M1_si3 -> M1_cecum;k_p2 * M1_si3;;;
+Equation;M1_cecum -> M1_colon;k_p3 * M1_cecum;;;
+Equation;M1_colon -> M1_feces;k_p4 * M1_colon;;;
+Equation;M1_feces -> null;k_p4 * M1_feces;;;
+Equation;M1_cecum -> M1_serum;k_aLI1_M1  * M1_cecum;;;
+Equation;M1_colon -> M1_serum;k_aLI2_M1  * M1_colon;;;
+Equation;M1_serum -> M1_liver;k_eh * M1_serum;;;
+Equation;M1_liver -> M1_si1;k_eh * M1_liver;;;
+Equation;M1_serum -> M1_urine;k_e_M1 * M1_serum;;;
+Equation;M3_serum -> M3_urine;k_e_M3 * M3_serum;;;
+Equation;M1_cecum -> M3_cecum;k_cB_M3 * M1_cecum;;;
+Equation;M3_cecum -> M3_serumbact;k_aLI1_M3 * M3_cecum;;;
+Equation;M3_serumbact -> M3_urinebact;k_e_M3 * M3_serumbact;;;
+Equation;M3_cecum -> M3_colon;k_p3 * M3_cecum;;;
+Equation;M3_colon -> M3_feces;k_p4 * M3_colon;;;
+Equation;M3_feces -> null;k_p4 * M3_feces;;;
+Equation;P_serum -> P_liver;k_eh * P_serum;;;
+Equation;P_liver -> P_si1;k_eh * P_liver;;;
+Equation;P_si1 -> P_serum;k_aSI_P * P_si1;;;
+Equation;P_si2 -> P_serum;k_aSI_P * P_si2;;;
+Equation;P_si3 -> P_serum;k_aSI_P * P_si3;;;
+Equation;P_si0 -> P_si1;k_p1 * P_si0;;;
+Equation;P_si1 -> P_si2;k_p1 * P_si1;;;
+Equation;P_si2 -> P_si3;k_p1 * P_si2;;;
+Equation;P_si3 -> P_cecum;k_p2 * P_si3;;;
+Equation;P_cecum -> P_colon;k_p3 * P_cecum;;;
+Equation;P_colon -> P_feces;k_p4 * P_colon;;;
+Equation;P_feces -> null;k_p4 * P_feces;;;
+Equation;P_cecum -> P_serum;k_aLI1_P * P_cecum;;;
+Equation;P_colon -> P_serum;k_aLI2_P * P_colon;;;
+Equation;P_serum -> M2_serum;k_cH_M2 * P_serum;;;
+Equation;M2_serum -> M3_serum;k_cH_M2M3 * M2_serum;;;
+Equation;M2_serum -> M2_urine;k_e_M2 * M2_serum;;;
+Equation;P_cecum -> M2_cecum;k_cB_M2 * P_cecum;;;
+Equation;M2_cecum -> M2_serumbact;k_aLI1_M2 * M2_cecum;;;
+Equation;M2_serumbact -> M2_urinebact;k_e_M2 * M2_serumbact;;;
+Equation;M2_cecum -> M2_colon;k_p3 * M2_cecum;;;
+Equation;M2_colon -> M2_feces;k_p4 * M2_colon;;;
+Equation;M2_feces -> null;k_p4 * M2_feces;;;

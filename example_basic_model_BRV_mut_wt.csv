@@ -1,0 +1,61 @@
+Drug pharmacokinetic model description and parameter definitions for BRV model for B. thetaiotaomicron mutant and wildtype;;;;;
+;;;;;
+;;;;;BRV model GN wt and GN mut
+Model entity;Name;Description;Units;Fit data;Initial value
+Constant;D;Drug dose administered to the mouse;micromole;0;7
+Constant;F;Bioavailability of the drug (estimated in a separate experiment, see supplementary tables S20-S22);;0;0.694
+Constant;Vsi;Volume of small intestine;milliliter;0;0.3
+Constant;Vserum;Volume of distribution (estimated in a separate experiment, see supplementary tables S20-S22);milliliter;0;8
+Constant;Vcecum;Volume of cecum of WT-colonized mouse;milliliter;0;3
+Constant;Vcolon;Volume of colon of WT-colonized mouse (cecal volume propagated to colon);milliliter;0;3
+Constant;Vfeces;Volume of feces of WT-colonized mouse (cecal volume propagated to feces);milliliter;0;3
+Constant;VcecumCVR;Volume of cecum of MUT-colonized mouse;milliliter;0;3
+Constant;VcolonCVR;Volume of colon of MUT-colonized mouse (cecal volume propagated to colon);milliliter;0;3
+Constant;VfecesCVR;Volume of feces of MUT-colonized mouse (cecal volume propagated to feces);milliliter;0;3
+Metabolite;P_si;Parent drug available for absorption from SI to serum, initial amout calculated as dose D * bioavailability F;micromole;;4.858
+Metabolite;P_si0;Parent drug available for propagation from SI to the GI tract, initial amout calculated as dose D * (1-bioavailability F);micromole;;2.142
+Metabolite;P_si1;Parent drug amount in the small intestine I;micromole;;0
+Metabolite;P_si2;Parent drug amount in the small intestine II;micromole;;0
+Metabolite;P_si3;Parent drug amount in the small intestine III;micromole;;0
+Metabolite;P_serum;Parent drug amount in the serum;micromole;;0
+Metabolite;M_serum;Metabolite M amount in the serum;micromole;;0
+Metabolite;P_cecum;Parent drug amount in the cecum;micromole;;0
+Metabolite;P_colon;Parent drug amount in the colon;micromole;;0
+Metabolite;P_feces;Parent drug amount in the feces;micromole;;0
+Metabolite;M_cecum;Metabolite M amount in the cecum;micromole;;0
+Metabolite;M_colon;Metabolite M amount in the colon;micromole;;0
+Metabolite;M_feces;Metabolite M amount in the feces;micromole;;0
+Metabolite;M_serumbact;Metabolite M amount in the serum contributed by bacteria (absorbed from cecum to serum);micromole;;0
+Parameter;k_aSI_P;coefficient of absorption from SI to serum;1/hour;1;0.891
+Parameter;k_e_P;coefficient of drug elimination from serum;1/hour;1;0.959
+Parameter;k_cH;coefficient of drug to metabolite conversion by the host;1/hour;1;0.547
+Parameter;k_e_M;coefficient of metabolite elimination from serum;1/hour;0;0.48
+Parameter;k_p1;coefficient of drug propagation through small intestine;1/hour;1;0.139
+Parameter;k_p2;coefficient of drug propagation from small intestine to cecum;1/hour;1;0.149
+Parameter;k_p3;coefficient of drug propagation from cecum to colon;1/hour;1;0.254
+Parameter;k_p4;coefficient of drug propagation from colon to feces;1/hour;1;0.258
+Parameter;k_p5;coefficient of drug elimination from feces;1/hour;1;0.841
+Parameter;k_aLI_P;coefficient of drug absorption from large intestine;1/hour;0;0
+Parameter;k_cB;coefficient of drug to metabolite conversion by the bacteria;1/hour;2;0.891
+Parameter;k_aLI1_M;coefficient of metabolite absorption from cecum to serum;1/hour;2;0.959
+Parameter;k_aLI2_M;coefficient of metabolite absorption from large intestine (colon) to serum;1/hour;2;0.547
+Equation;P_si -> P_serum;k_aSI_P * P_si;;;
+Equation;P_serum -> null;k_e_P * P_serum;;;
+Equation;P_serum -> M_serum;k_cH * P_serum;;;
+Equation;M_serum -> null;k_e_M * M_serum;;;
+Equation;P_si0 -> P_si1;k_p1 * P_si0;;;
+Equation;P_si1 -> P_si2;k_p1 * P_si1;;;
+Equation;P_si2 -> P_si3;k_p1 * P_si2;;;
+Equation;P_si3 -> P_cecum;k_p2 * P_si3;;;
+Equation;P_cecum -> P_colon;k_p3 * P_cecum;;;
+Equation;P_colon -> P_feces;k_p4 * P_colon;;;
+Equation;P_feces -> null;k_p5 * P_feces;;;
+Equation;P_cecum -> P_serum;k_aLI_P * P_cecum;;;
+Equation;P_colon -> P_serum;k_aLI_P * P_colon;;;
+Equation;P_cecum -> M_cecum;k_cB * P_cecum;;;
+Equation;M_cecum -> M_colon;k_p3 * M_cecum;;;
+Equation;M_colon -> M_feces;k_p4 * M_colon;;;
+Equation;M_feces -> null;k_p5 * M_feces;;;
+Equation;M_colon -> M_serumbact;k_aLI1_M * M_colon;;;
+Equation;M_cecum -> M_serumbact;k_aLI2_M * M_cecum;;;
+Equation;M_serumbact -> null;k_e_M * M_serumbact;;;
