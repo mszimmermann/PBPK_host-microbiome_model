@@ -22,7 +22,9 @@ datafilenames2 = {'example_data_BRV_WT.csv'...
                   'example_data_CLZ_CV.csv'...
                   'example_data_CLZ_CV_extended.csv'
                    };
-              
+% flag indicating whether to perform sensitivity analysis
+% (change to 1 to perfrom sensitivity analysis)
+perform_sensitivity_analysis_flag = 0;              
 % build the models
 for files_i = 1:length(modelfilenames)
     modelfilename = [dataFolder modelfilenames{files_i}];
@@ -195,11 +197,11 @@ for files_i = 1:length(modelfilenames)
         hybridMethod = 'fminsearch';
         hybridopts = optimset('Display', 'none');
         options = optimoptions(options, 'HybridFcn', {hybridMethod, hybridopts});
-        resultsDRUGCVR = sbiofit(modelGutUniversalBact, gd,responseMap,estimated_parameters,[],...
+        resultsHostBact = sbiofit(modelGutUniversalBact, gd,responseMap,estimated_parameters,[],...
                           globalMethod,options,'pooled',true);
 
         randomRunsBact_init(run_i,1:length(init)) = init;
-        randomRunsBact_results{run_i} = resultsDRUGCVR;
+        randomRunsBact_results{run_i} = resultsHostBact;
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % set model parameters to optimized values and simulate
         parameterNames = cell(size(modelGutUniversalBact.Parameters));
@@ -207,9 +209,9 @@ for files_i = 1:length(modelfilenames)
             parameterNames{i} = modelGutUniversalBact.Parameters(i).Name;
         end
 
-        for i=1:length(resultsDRUGCVR.ParameterEstimates.Name)
-            modelGutUniversalBact.Parameters(ismember(parameterNames, resultsDRUGCVR.ParameterEstimates.Name(i))).Value =...
-                 resultsDRUGCVR.ParameterEstimates.Estimate(i);
+        for i=1:length(resultsHostBact.ParameterEstimates.Name)
+            modelGutUniversalBact.Parameters(ismember(parameterNames, resultsHostBact.ParameterEstimates.Name(i))).Value =...
+                 resultsHostBact.ParameterEstimates.Estimate(i);
         end
 
         % define tissue weights depending on the model
@@ -237,6 +239,15 @@ for files_i = 1:length(modelfilenames)
             metNamesMap, useForFitting)
         suptitle(datafilename2)
         % save model fitting and predictions to a file  
-        prepare_data_for_tables_public(t, curVolumes, modelGutUniversalBact, resultsDRUGCVR, ...
+        prepare_data_for_tables_public(t, curVolumes, modelGutUniversalBact, resultsHostBact, ...
             metNamesMap, useForFitting, outfilename2, initParValue)
+        if perform_sensitivity_analysis_flag
+            perform_global_sensitivity_analysis(modelGutUniversal,...
+                                             resultsHost,...
+                                             resultsHostBact,...
+                                             1000,...
+                                             0,...
+                                             0,...
+                                             1);
+        end
 end

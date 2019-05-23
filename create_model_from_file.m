@@ -81,7 +81,10 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % define the model
-modelGutUniversal = sbiomodel('UniversalDrugMetGut');
+% define model name as file name (remove extension and folder)
+modelName = strsplit(filename, {filesep, '.'});
+modelName = modelName{end-1};
+modelGutUniversal = sbiomodel(modelName);
 
 %% Add Species and Set initial concentrations of species
 for i=1:length(modelSpecies)
@@ -111,5 +114,6 @@ for i=1:length(modelConstants)
     addparameter(modelGutUniversal, dataArray{search_for_columns_idx(2)}{modelConstants(i)},...
                  str2double(dataArray{search_for_columns_idx(5)}{modelConstants(i)}),...
                  'ValueUnits', dataArray{search_for_columns_idx(4)}{modelConstants(i)},...
-                 'Notes', dataArray{search_for_columns_idx(6)}{modelConstants(i)});
+                 'Notes', dataArray{search_for_columns_idx(6)}{modelConstants(i)},...
+                 'Tag', 'constant');
 end
