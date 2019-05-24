@@ -34,21 +34,33 @@ function perform_global_sensitivity_analysis(baseModel,...
                                              
                                              
 % sensitivity analysis: simulate model with changing parameters
-% get model parameter anames
+% get model parameter names
 baseModelParameterNames = cell(length(baseModel.Parameters),1);
+baseModelParameterIDX = zeros(length(baseModel.Parameters),1);
+Fidx = 0;
+Didx = 0;
 for i=1:length(baseModel.Parameters)
     % only add parameters that are not constants for random sampling
     if ~(ismember(baseModel.Parameters(i).Tag, {'constant'}))
         baseModelParameterNames{i} = baseModel.Parameters(i).Name;
+        baseModelParameterIDX(i) = i;
+    end
+    if ~(isequal(baseModel.Parameters(i).Name, {'F'}))
+        Fidx = i;
+    end
+    if ~(isequal(baseModel.Parameters(i).Name, {'D'}))
+        Didx = i;
     end
 end
 % add drug dose D to simulated parameters if specified in the flag
 if change_dose_flag
     baseModelParameterNames = [baseModelParameterNames; 'D'];
+    baseModelParameterIDX(end+1) = Didx;
 end
 % add bioavailability F to simulated parameters if specified in the flag
 if change_bioavailabilityF_flag
     baseModelParameterNames = [baseModelParameterNames; 'F'];
+    baseModelParameterIDX(end+1) = Fidx;
 end
 baseModelParameterNames(cellfun(@(x) isempty(x), baseModelParameterNames))=[];
 % get the intestinal propagation parameters k_p1-k_p5
@@ -58,8 +70,8 @@ propagationParameters = find(cellfun(@(x) ismember(x,...
 % get the bioavailability parameter F
 bioavailParameters = find(ismember(baseModelParameterNames, 'F'));
 % get the means and STD of the parameter estimates 
-modelParameterEstimetesMEAN = zeros(length(baseModel.Parameters),1);
-modelParameterEstimetesSTD = zeros(length(baseModel.Parameters),1);
+modelParameterEstimetesMEAN = zeros(length(baseModelParameterNames),1);
+modelParameterEstimetesSTD = zeros(length(baseModelParameterNames),1);
 
 % extract information from the imput parameter estimate structures
 for i=1:length(baseModelParameterNames)
@@ -74,10 +86,10 @@ for i=1:length(baseModelParameterNames)
         modelParameterEstimetesSTD(i) = resultsHostBact.ParameterEstimates{idx,'StandardError'};
     end
     % check whether the parameter is defined in the input file (Notes==0)
-    if str2double(baseModel.Parameters(i).Notes) == 0
-        modelParameterEstimetesMEAN(i) = baseModel.Parameters(i).Value;
+    if str2double(baseModel.Parameters(baseModelParameterIDX(i)).Notes) == 0
+        modelParameterEstimetesMEAN(i) = baseModel.Parameters(baseModelParameterIDX(i)).Value;
         % heuristic STD - half of the mean
-        modelParameterEstimetesSTD(i) = baseModel.Parameters(i).Value/2;
+        modelParameterEstimetesSTD(i) = baseModel.Parameters(baseModelParameterIDX(i)).Value/2;
     end        
 end
 
@@ -100,7 +112,7 @@ else
 % log-uniform U[-3 3] distribution for all non-propagation parameters, 
 % normal distributon N(mean, 3*std) for propagation parameters, 
 % and U[0 1] for bioavailability F
-    parRange = 10.^([-3:0.1:3]);
+    parRange = 10.^([-5:0.1:5]);
     randParValues = randn(length(baseModelParameterNames),nsim);
     randParIDX = randi(length(parRange), length(baseModelParameterNames),nsim);
     randParValuesUnif = arrayfun(@(x) parRange(x), randParIDX);
@@ -123,22 +135,43 @@ fig = figure('units','normalized','outerposition',[0 0 1 1]);
 spnum = ceil(size(randParValues,1)/3);
 for i=1:size(randParValues,1)
     subplot(3,spnum,i)
-    if ismember(i, propagationParameters) ||...
-       ismember(i, bioavailParameters)
+    if simulate_within_estimated_flag
         hist((randParValues(i,:)))
+        hold on
+        errorbar(modelParameterEstimetesMEAN(i), 300, modelParameterEstimetesSTD(i), 'horizontal', 'LineWidth', 3)
     else
-        hist(log10(randParValues(i,:)))
+        if ismember(i, propagationParameters) ||...
+           ismember(i, bioavailParameters)
+            hist((randParValues(i,:)))
+            hold on
+            errorbar(modelParameterEstimetesMEAN(i), 300, modelParameterEstimetesSTD(i), 'horizontal', 'LineWidth', 3)
+        else
+            hist(log10(randParValues(i,:)))
+            hold on
+            bar(log10(modelParameterEstimetesMEAN(i)), 300)
+        end
     end
     title(baseModelParameterNames{i})
 end
 
-suptitle({sprintf('Random parameter sampling for %s, n=%d', baseModel.Name, nsim),...
+if simulate_within_estimated_flag
+    suptitle({sprintf('Random parameter sampling for %s, n=%d', baseModel.Name, nsim),...
+          'Distribution: Normal with mean and std of the estimated values'})
+    % print figure to file
+    orient landscape
+    print(fig, '-painters', '-dpdf', '-r600', '-bestfit',...
+        ['hist_parameter_sampling_within_estimates_for_', baseModel.Name, '.pdf'])
+
+else
+    suptitle({sprintf('Random parameter sampling for %s, n=%d', baseModel.Name, nsim),...
           ['Distribution: log10 uniform for non-propagation parameters,',...
           ' Normal with mean=estimatedValue and 3*std for propagation parameters']})
-% print figure to file
-orient landscape
-print(fig, '-painters', '-dpdf', '-r600', '-bestfit',...
-      ['hist_parameter_sampling_for_', baseModel.Name, '.pdf'])
+      % print figure to file
+    orient landscape
+    print(fig, '-painters', '-dpdf', '-r600', '-bestfit',...
+        ['hist_parameter_sampling_uniform_for_', baseModel.Name, '.pdf'])
+
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % plot subsample of pairwise parameter distributions
@@ -180,10 +213,18 @@ for i=1:length(baseModelParameterNames)
 end
 suptitle(sprintf('Random parameter sampling for %s, n=%d out of %d',...
                  baseModel.Name, nselectsim, nsim))
-% print figure to file
-orient landscape
-print(fig, '-painters', '-dpdf', '-r600', '-bestfit',...
-      ['scatter_pairwise_parameter_sampling_for_', baseModel.Name, '.pdf'])
+if simulate_within_estimated_flag
+                 % print figure to file
+    orient landscape
+    print(fig, '-painters', '-dpdf', '-r600', '-bestfit',...
+        ['scatter_pairwise_parameter_sampling_withon_estimates_for_', baseModel.Name, '.pdf'])
+else
+                 % print figure to file
+    orient landscape
+    print(fig, '-painters', '-dpdf', '-r600', '-bestfit',...
+          ['scatter_pairwise_parameter_sampling_uniform_for_', baseModel.Name, '.pdf'])
+end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

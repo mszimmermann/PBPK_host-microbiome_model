@@ -10,5 +10,7 @@ function newModel = resetModelParameters(baseModel, Fdrug, dose)
     P_si0.InitialAmount = (1-Fdrug)*dose;
     % reset values of all changing parameters to 0 (Notes~=0)
     for i=1:length(newModel.Parameters)
-        newModel.Parameters(i).Value = 0;
+        if ~isequal(newModel.Parameters(i).Tag, 'constant')
+            newModel.Parameters(i).Value = 0;
+        end
     end
