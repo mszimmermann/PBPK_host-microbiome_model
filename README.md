@@ -12,4 +12,6 @@ Example workflow is provided in the file pbpk_host_microbiome_workflow_1.
 
 Example workflow pbpk_host_microbiome_workflow_2 contains an extended PBPK host-microbiome model with enterohepatic circulation and three drug metabolites. 
 
+Folder Insights_from_PBPK_models contains simulation workflows to assess the effect of microbiota on the systemic drug and metabolite levels under conditions of altered host physiology (small and large intestine permeability), microbiota drug-metabolizing activity or enterohepatic circulation. 
+
 This model is part of the work by Michael Zimmermann, Maria Zimmermann-Kogadeeva, Rebekka Wegmann and Andrew L. Goodman. 
