@@ -12,6 +12,7 @@ function simulate_pbpk_model(t, curVolumes, modelGutUniversal, ...
     lineWidth = 0.5;
     for i=1:length(simData.dataNames)
         subplot(3,ceil(length(simData.dataNames)/3),i)
+        hold on
         if ismember(simData.dataNames{i}, metNamesMap(useForFitting,1)) % used for fitting
             h1 = plot(simData.Time,simData.Data(:,i)/curVolumes(i), 'LineWidth', 2);
         else

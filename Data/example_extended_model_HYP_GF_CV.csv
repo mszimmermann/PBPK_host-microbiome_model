@@ -1,0 +1,70 @@
+Drug pharmacokinetic model description and parameter definitions of the extended model CLZ for GF and CV mice;;;;;;
+;;;;;;
+;;;;;CLZ models;
+Model entity;Name;Description;Units;Fit data;Initial value;Initial value STD
+Constant;D;Drug dose administered to the mouse;mole;0;100;
+Constant;F;Bioavailability of the drug (estimated in a separate experiment, see supplementary table S22);;0;1;
+Constant;Vsi;Volume of small intestine;milliliter;0;0.3;
+Constant;Vserum;Volume of distribution (estimated in a separate experiment, see supplementary table S22);milliliter;0;30;
+Constant;Vcecum;Volume of cecum of germ-free mouse;milliliter;0;3;
+Constant;Vcolon;Volume of colon of germ-free mouse (cecal volume propagated to colon);milliliter;0;3;
+Constant;Vfeces;Volume of feces of germ-free mouse (cecal volume propagated to feces);milliliter;0;3;
+Constant;VcecumCVR;Volume of cecum of conventional mouse;milliliter;0;0.25;
+Constant;VcolonCVR;Volume of colon of conventional mouse (cecal volume propagated to colon);milliliter;0;0.25;
+Constant;VfecesCVR;Volume of feces of conventional mouse (cecal volume propagated to feces);milliliter;0;0.25;
+Constant;Vurine;Volume of urine;milliliter;0;2;
+Metabolite;P_si;Parent drug available for absorption from SI to serum, initial amout calculated as dose D * bioavailability F;mole;;1;
+Metabolite;P_serum;Parent drug amount in the serum;mole;;0;
+Metabolite;P_urine;Parent drug amount in the urine;mole;;0;
+Metabolite;P_si1;Parent drug amount in the small intestine I;mole;;0;
+Metabolite;P_si2;Parent drug amount in the small intestine II;mole;;0;
+Metabolite;P_si3;Parent drug amount in the small intestine III;mole;;0;
+Metabolite;M_serum;Metabolite M2 amount in the serum;mole;;0;
+Metabolite;P_liver;Parent drug amount in the liver;mole;;0;
+Metabolite;P_bile;Parent drug amount in bile (enterohepatic circulation);mole;;0;
+Metabolite;P_cecum;Parent drug amount in the cecum;mole;;0;
+Metabolite;M_cecum;Metabolite M2 amount in the cecum;mole;;0;
+Metabolite;P_colon;Parent drug amount in the colon;mole;;0;
+Metabolite;M_colon;Metabolite M2 amount in the colon;mole;;0;
+Metabolite;P_feces;Parent drug amount in the feces;mole;;0;
+Metabolite;M_feces;Metabolite M2 amount in the feces;mole;;0;
+Metabolite;M_serumbact;Metabolite M2 amount in the serum contributed by bacteria (absorbed from cecum to serum);mole;;0;
+Metabolite;M_urinebact;Metabolite M2 amount in the urine contributed by bacteria (absorbed from cecum to serum and eliminated into urine);mole;;0;
+Metabolite;M_urine;Metabolite M2 amount in the urine;mole;;0;
+Parameter;k_a_P;coefficient of absorption from SI to serum;1/hour;1;1.238;0.176
+Parameter;k_e_P;coefficient of enterohepatic circulation;1/hour;1;2.324;0.211
+Parameter;k_p4;coefficient of M2 absorption from large intestine;1/hour;1;0.626;0.148
+Parameter;k_p3;coefficient of bacterial conversion of drug to M2;1/hour;1;1.031;0.292
+Parameter;k_eh;coefficient of host conversion of drug to M2;1/hour;1;0.885;0.55
+Parameter;k_aSI_P;coefficient of metabolite absorption from cecum to serum;1/hour;1;0.25;0.25
+Parameter;k_p1;coefficient of host conversion of M2 to M3;1/hour;1;0.494;0.074
+Parameter;k_p2;coefficient of M2 elimination from serum;1/hour;1;0.4343;0.4797
+Parameter;k_aLI1_P;coefficient of drug propagation through small intestine;1/hour;1;0.0001;0.00001
+Parameter;k_cH_M;coefficient of M3 elimination from serum;1/hour;1;0.374;0.071
+Parameter;k_e_M;coefficient of drug absorption from cecum;1/hour;1;0.48;0.1
+Parameter;k_cB_M;coefficient of metabolite absorption from large intestine (colon) to serum;1/hour;2;3.1;0.75
+Parameter;k_aLI1_M;coefficient of drug to metabolite conversion by the host;1/hour;2;7.486;1.554
+Equation;P_si -> P_serum;k_a_P * P_si;;;;
+Equation;P_serum -> P_urine;k_e_P * P_serum;;;;
+Equation;P_serum -> P_liver;k_eh * P_serum;;;;
+Equation;P_liver -> P_si1;k_eh * P_liver;;;;
+Equation;P_si1 -> P_serum;k_aSI_P * P_si1;;;;
+Equation;P_si2 -> P_serum;k_aSI_P * P_si2;;;;
+Equation;P_si3 -> P_serum;k_aSI_P * P_si3;;;;
+Equation;P_si -> P_si1;k_p1 * P_si;;;;
+Equation;P_si1 -> P_si2;k_p1 * P_si1;;;;
+Equation;P_si2 -> P_si3;k_p1 * P_si2;;;;
+Equation;P_si3 -> P_cecum;k_p2 * P_si3;;;;
+Equation;P_cecum -> P_colon;k_p3 * P_cecum;;;;
+Equation;P_colon -> P_feces;k_p4 * P_colon;;;;
+Equation;P_feces -> null;k_p4 * P_feces;;;;
+Equation;P_cecum -> P_serum;k_aLI1_P * P_cecum;;;;
+Equation;P_colon -> P_serum;k_aLI1_P * P_colon;;;;
+Equation;P_serum -> M_serum;k_cH_M * P_serum;;;;
+Equation;M_serum -> M_urine;k_e_M * M_serum;;;;
+Equation;P_cecum -> M_cecum;k_cB_M * P_cecum;;;;
+Equation;M_cecum -> M_serumbact;k_aLI1_M * M_cecum;;;;
+Equation;M_serumbact -> M_urinebact;k_e_M * M_serumbact;;;;
+Equation;M_cecum -> M_colon;k_p3 * M_cecum;;;;
+Equation;M_colon -> M_feces;k_p4 * M_colon;;;;
+Equation;M_feces -> null;k_p4 * M_feces;;;;
